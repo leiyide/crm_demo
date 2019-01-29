@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crm.mapper.EmployeeMapper">
+  <resultMap id="BaseResultMap" type="com.crm.entity.Employee">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="username" jdbcType="CHAR" property="username" />
+    <result column="pass" jdbcType="CHAR" property="pass" />
+    <result column="nickname" jdbcType="CHAR" property="nickname" />
+    <result column="realname" jdbcType="CHAR" property="realname" />
+    <result column="jobInfoId" jdbcType="INTEGER" property="jobinfoid" />
+    <result column="departmentId" jdbcType="INTEGER" property="departmentid" />
+    <result column="phoneNo" jdbcType="CHAR" property="phoneno" />
+    <result column="officeTel" jdbcType="CHAR" property="officetel" />
+    <result column="workStatu" jdbcType="CHAR" property="workstatu" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, username, pass, nickname, realname, jobInfoId, departmentId, phoneNo, officeTel, 
+    workStatu
+  </sql>
+  
+  <!-- 进行用户登录的查询 -->
+  <select id="employeeLogin" resultType="com.crm.entity.Employee">
+  	select * from employee where username=#{username} and pass=#{pass} 
+  </select>
+  <!-- 管理员新增用户 -->
+   <insert id="addEmployee" parameterType="com.crm.entity.Employee">
+    insert into employee (id, username, pass, 
+      nickname, realname, jobInfoId, 
+      departmentId, phoneNo, officeTel, 
+      workStatu)
+    values (#{id,jdbcType=INTEGER}, #{username,jdbcType=CHAR}, #{pass,jdbcType=CHAR}, 
+      #{nickname,jdbcType=CHAR}, #{realname,jdbcType=CHAR}, #{jobinfoid,jdbcType=INTEGER}, 
+      #{departmentid,jdbcType=INTEGER}, #{phoneno,jdbcType=CHAR}, #{officetel,jdbcType=CHAR}, 
+      #{workstatu,jdbcType=CHAR})
+  </insert>
+  
+  <!-- 进行用户登录的查询 -->
+  <select id="selectAllEmployee" resultType="com.crm.entity.Employee">
+  	select * from employee 
+  	<where>
+  		<if test="username!=null and username!=''">
+  		and username like #{username}
+  		</if>
+  	</where>
+  </select>
+
+  <!-- 根据id进行查询 -->
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from employee
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 对员工信息进行修改 -->
+    <update id="editEmployee" parameterType="com.crm.entity.Employee">
+    update employee
+    <set>
+      <if test="username != null and username!='' ">
+        username = #{username,jdbcType=CHAR},
+      </if>
+      <if test="pass != null and pass!='' ">
+        pass = #{pass,jdbcType=CHAR},
+      </if>
+      <if test="nickname != null and nickname!='' ">
+        nickname = #{nickname,jdbcType=CHAR},
+      </if>
+      <if test="realname != null and realname!=''">
+        realname = #{realname,jdbcType=CHAR},
+      </if>
+      <if test="jobinfoid != null">
+        jobInfoId = #{jobinfoid,jdbcType=INTEGER},
+      </if>
+      <if test="departmentid != null">
+        departmentId = #{departmentid,jdbcType=INTEGER},
+      </if>
+      <if test="phoneno != null and phoneno!='' ">
+        phoneNo = #{phoneno,jdbcType=CHAR},
+      </if>
+      <if test="officetel != null and officetel!='' ">
+        officeTel = #{officetel,jdbcType=CHAR},
+      </if>
+      <if test="workstatu != null and workstatu!=''">
+        workStatu = #{workstatu,jdbcType=CHAR}
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 进行单个数据的删除 -->
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from employee
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <!-- 初始化密码 -->
+  <update id="startPass" parameterType="java.lang.Integer">
+    update employee 
+    <set>
+        pass = 123456
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 得到所有的tmk员工 -->
+  <select id="getTmk1" parameterType="java.lang.String" resultMap="BaseResultMap">
+   select * from employee where jobInfoId=7
+  </select>
+  
+<!-- 得到所有的咨询师员工 -->
+  <select id="getConsult" parameterType="java.lang.String" resultMap="BaseResultMap">
+   select * from employee where jobInfoId=5
+  </select>
+
+  <insert id="insert" parameterType="com.crm.entity.Employee">
+    insert into employee (id, username, pass, 
+      nickname, realname, jobInfoId, 
+      departmentId, phoneNo, officeTel, 
+      workStatu)
+    values (#{id,jdbcType=INTEGER}, #{username,jdbcType=CHAR}, #{pass,jdbcType=CHAR}, 
+      #{nickname,jdbcType=CHAR}, #{realname,jdbcType=CHAR}, #{jobinfoid,jdbcType=INTEGER}, 
+      #{departmentid,jdbcType=INTEGER}, #{phoneno,jdbcType=CHAR}, #{officetel,jdbcType=CHAR}, 
+      #{workstatu,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.crm.entity.Employee" >
+    insert into employee
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="username != null">
+        username,
+      </if>
+      <if test="pass != null">
+        pass,
+      </if>
+      <if test="nickname != null">
+        nickname,
+      </if>
+      <if test="realname != null">
+        realname,
+      </if>
+      <if test="jobinfoid != null">
+        jobInfoId,
+      </if>
+      <if test="departmentid != null">
+        departmentId,
+      </if>
+      <if test="phoneno != null">
+        phoneNo,
+      </if>
+      <if test="officetel != null">
+        officeTel,
+      </if>
+      <if test="workstatu != null">
+        workStatu,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=CHAR},
+      </if>
+      <if test="pass != null">
+        #{pass,jdbcType=CHAR},
+      </if>
+      <if test="nickname != null">
+        #{nickname,jdbcType=CHAR},
+      </if>
+      <if test="realname != null">
+        #{realname,jdbcType=CHAR},
+      </if>
+      <if test="jobinfoid != null">
+        #{jobinfoid,jdbcType=INTEGER},
+      </if>
+      <if test="departmentid != null">
+        #{departmentid,jdbcType=INTEGER},
+      </if>
+      <if test="phoneno != null">
+        #{phoneno,jdbcType=CHAR},
+      </if>
+      <if test="officetel != null">
+        #{officetel,jdbcType=CHAR},
+      </if>
+      <if test="workstatu != null">
+        #{workstatu,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crm.entity.Employee">
+    update employee
+    <set>
+      <if test="username != null">
+        username = #{username,jdbcType=CHAR},
+      </if>
+      <if test="pass != null">
+        pass = #{pass,jdbcType=CHAR},
+      </if>
+      <if test="nickname != null">
+        nickname = #{nickname,jdbcType=CHAR},
+      </if>
+      <if test="realname != null">
+        realname = #{realname,jdbcType=CHAR},
+      </if>
+      <if test="jobinfoid != null">
+        jobInfoId = #{jobinfoid,jdbcType=INTEGER},
+      </if>
+      <if test="departmentid != null">
+        departmentId = #{departmentid,jdbcType=INTEGER},
+      </if>
+      <if test="phoneno != null">
+        phoneNo = #{phoneno,jdbcType=CHAR},
+      </if>
+      <if test="officetel != null">
+        officeTel = #{officetel,jdbcType=CHAR},
+      </if>
+      <if test="workstatu != null">
+        workStatu = #{workstatu,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crm.entity.Employee">
+    update employee
+    set username = #{username,jdbcType=CHAR},
+      pass = #{pass,jdbcType=CHAR},
+      nickname = #{nickname,jdbcType=CHAR},
+      realname = #{realname,jdbcType=CHAR},
+      jobInfoId = #{jobinfoid,jdbcType=INTEGER},
+      departmentId = #{departmentid,jdbcType=INTEGER},
+      phoneNo = #{phoneno,jdbcType=CHAR},
+      officeTel = #{officetel,jdbcType=CHAR},
+      workStatu = #{workstatu,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

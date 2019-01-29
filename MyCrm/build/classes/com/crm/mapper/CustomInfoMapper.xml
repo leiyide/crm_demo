@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crm.mapper.CustomInfoMapper">
+  <resultMap id="BaseResultMap" type="com.crm.entity.CustomInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="customId" jdbcType="INTEGER" property="customid" />
+    <result column="followManId" jdbcType="INTEGER" property="followmanid" />
+    <result column="statu" jdbcType="CHAR" property="statu" />
+    <result column="startDate" jdbcType="DATE" property="startdate" />
+    <result column="lastFollowDate" jdbcType="CHAR" property="lastfollowdate" />
+    <result column="planDate" jdbcType="DATE" property="plandate" />
+    <result column="mark" jdbcType="VARCHAR" property="mark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, customId, followManId, statu, startDate, lastFollowDate, planDate, mark
+  </sql>
+  
+  <!-- 对销售跟踪表进行插入（根据销售助理进行分配的数据） -->
+  <insert id="insertCustomInfo" parameterType="com.crm.entity.CustomInfo">
+    insert into custominfo (id, customId, followManId, 
+      statu, startDate, lastFollowDate, 
+      planDate, mark)
+    values (#{id,jdbcType=INTEGER}, #{customid,jdbcType=INTEGER}, #{followmanid,jdbcType=INTEGER}, 
+      #{statu,jdbcType=CHAR}, #{startdate,jdbcType=DATE}, #{lastfollowdate,jdbcType=CHAR}, 
+      #{plandate,jdbcType=DATE}, #{mark,jdbcType=VARCHAR})
+  </insert>
+
+ <!-- 电销员工进行数据的查询 -->
+  <select id="selecCustomInfo"  resultMap="BaseResultMap">
+  select c.id cid,c.name,c.phoneNo,c.qq,c.email,i.id iid,i.customId,i.followManId,i.statu,i.startDate,i.lastFollowDate from custom c,custominfo i
+  	<where>
+      c.id=i.customid and i.followManId=${id}
+      <if test="startdate != null">
+  		and startdate like #{startdate} 
+  		</if>
+   </where> 
+  </select>
+ 
+    <insert id="insert" parameterType="com.crm.entity.CustomInfo">
+    insert into custominfo
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="customid != null">
+        customId,
+      </if>
+      <if test="followmanid != null">
+        followManId,
+      </if>
+      <if test="statu != null">
+        statu,
+      </if>
+      <if test="startdate != null">
+        startDate,
+      </if>
+      <if test="lastfollowdate != null">
+        lastFollowDate,
+      </if>
+      <if test="plandate != null">
+        planDate,
+      </if>
+      <if test="mark != null">
+        mark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="customid != null">
+        #{customid,jdbcType=INTEGER},
+      </if>
+      <if test="followmanid != null">
+        #{followmanid,jdbcType=INTEGER},
+      </if>
+      <if test="statu != null">
+        #{statu,jdbcType=CHAR},
+      </if>
+      <if test="startdate != null">
+        #{startdate,jdbcType=DATE},
+      </if>
+      <if test="lastfollowdate != null">
+        #{lastfollowdate,jdbcType=CHAR},
+      </if>
+      <if test="plandate != null">
+        #{plandate,jdbcType=DATE},
+      </if>
+      <if test="mark != null">
+        #{mark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from custominfo
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from custominfo
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.crm.entity.CustomInfo">
+    update custominfo
+    <set>
+      <if test="customid != null">
+        customId = #{customid,jdbcType=INTEGER},
+      </if>
+      <if test="followmanid != null">
+        followManId = #{followmanid,jdbcType=INTEGER},
+      </if>
+      <if test="statu != null">
+        statu = #{statu,jdbcType=CHAR},
+      </if>
+      <if test="startdate != null">
+        startDate = #{startdate,jdbcType=DATE},
+      </if>
+      <if test="lastfollowdate != null">
+        lastFollowDate = #{lastfollowdate,jdbcType=CHAR},
+      </if>
+      <if test="plandate != null">
+        planDate = #{plandate,jdbcType=DATE},
+      </if>
+      <if test="mark != null">
+        mark = #{mark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crm.entity.CustomInfo">
+    update custominfo
+    set customId = #{customid,jdbcType=INTEGER},
+      followManId = #{followmanid,jdbcType=INTEGER},
+      statu = #{statu,jdbcType=CHAR},
+      startDate = #{startdate,jdbcType=DATE},
+      lastFollowDate = #{lastfollowdate,jdbcType=CHAR},
+      planDate = #{plandate,jdbcType=DATE},
+      mark = #{mark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

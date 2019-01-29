@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crm.mapper.ConsultRecordMapper">
+  <resultMap id="BaseResultMap" type="com.crm.entity.ConsultRecord">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="customId" jdbcType="INTEGER" property="customid" />
+    <result column="consultManId" jdbcType="INTEGER" property="consultmanid" />
+    <result column="consultStatu" jdbcType="CHAR" property="consultstatu" />
+    <result column="consultDate" jdbcType="DATE" property="consultdate" />
+    <result column="result" jdbcType="VARCHAR" property="result" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, customId, consultManId, consultStatu, consultDate, result
+  </sql>
+  <!-- 插入数据到 咨询师跟踪表-->
+  <insert id="insertConsultRecord" parameterType="com.crm.entity.ConsultRecord">
+    insert into consultRecord (id, customId, consultManId, 
+      consultStatu, consultDate, result
+      )
+    values (#{id,jdbcType=INTEGER}, #{customid,jdbcType=INTEGER}, #{consultmanid,jdbcType=INTEGER}, 
+      #{consultstatu,jdbcType=CHAR}, #{consultdate,jdbcType=DATE}, #{result,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+ <!-- 咨询师增加跟踪表的数据-->
+  <insert id="newAddConsultRecord" parameterType="com.crm.entity.ConsultRecord">
+    insert into consultRecord (id, customId, consultManId, 
+      consultStatu, consultDate, result
+      )
+    values (#{id,jdbcType=INTEGER}, #{customid,jdbcType=INTEGER}, #{consultmanid,jdbcType=INTEGER}, 
+      #{consultstatu,jdbcType=CHAR}, #{consultdate,jdbcType=DATE}, #{result,jdbcType=VARCHAR}
+      )
+  </insert> 
+  
+  <!-- 咨询师进行数据的查询 -->
+  <select id="selectConsultRecord" resultType="com.crm.entity.ConsultRecord">
+       SELECT c.id cid,c.name,c.phoneNo,r.id rid,r.customId,r.consultManId, r.consultStatu,r.consultDate,r.result FROM custom c,consultRecord r 
+   <where>
+        c.id=r.customId AND r.consultManId=#{id}
+  		<if test="name!=null and name!=''">
+  		and name like #{name} 
+  		</if>
+  		<if test="phoneno!=null and phoneno!=''">
+  		and phoneno like #{phoneno}
+  		</if>
+  		<if test="consultdate!=null and consultdate!=''">
+  		and consultdate like #{consultdate}
+  		</if>	
+  	</where>
+  </select>
+  <!-- 咨询师根据主键进行查询 -->
+  <select id="selectByPrimary" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from consultRecord
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <!--咨询师进行数据的修改  -->
+  <update id="editConsultRecord" parameterType="com.crm.entity.ConsultRecord">
+    update consultRecord
+    <set>
+      <if test="customid != null">
+        customId = #{customid,jdbcType=INTEGER},
+      </if>
+      <if test="consultmanid != null">
+        consultManId = #{consultmanid,jdbcType=INTEGER},
+      </if>
+      <if test="consultstatu != null">
+        consultStatu = #{consultstatu,jdbcType=CHAR},
+      </if>
+      <if test="consultdate != null">
+        consultDate = #{consultdate,jdbcType=DATE},
+      </if>
+      <if test="result != null">
+        result = #{result,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{rid,jdbcType=INTEGER}
+  </update>
+  
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from consultRecord
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertSelective" parameterType="com.crm.entity.ConsultRecord">
+    insert into consultRecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="customid != null">
+        customId,
+      </if>
+      <if test="consultmanid != null">
+        consultManId,
+      </if>
+      <if test="consultstatu != null">
+        consultStatu,
+      </if>
+      <if test="consultdate != null">
+        consultDate,
+      </if>
+      <if test="result != null">
+        result,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="customid != null">
+        #{customid,jdbcType=INTEGER},
+      </if>
+      <if test="consultmanid != null">
+        #{consultmanid,jdbcType=INTEGER},
+      </if>
+      <if test="consultstatu != null">
+        #{consultstatu,jdbcType=CHAR},
+      </if>
+      <if test="consultdate != null">
+        #{consultdate,jdbcType=DATE},
+      </if>
+      <if test="result != null">
+        #{result,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crm.entity.ConsultRecord">
+    update consultRecord
+    <set>
+      <if test="customid != null">
+        customId = #{customid,jdbcType=INTEGER},
+      </if>
+      <if test="consultmanid != null">
+        consultManId = #{consultmanid,jdbcType=INTEGER},
+      </if>
+      <if test="consultstatu != null">
+        consultStatu = #{consultstatu,jdbcType=CHAR},
+      </if>
+      <if test="consultdate != null">
+        consultDate = #{consultdate,jdbcType=DATE},
+      </if>
+      <if test="result != null">
+        result = #{result,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crm.entity.ConsultRecord">
+    update consultRecord
+    set customId = #{customid,jdbcType=INTEGER},
+      consultManId = #{consultmanid,jdbcType=INTEGER},
+      consultStatu = #{consultstatu,jdbcType=CHAR},
+      consultDate = #{consultdate,jdbcType=DATE},
+      result = #{result,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

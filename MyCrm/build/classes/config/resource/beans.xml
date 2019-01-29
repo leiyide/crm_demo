@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- 打开注解 -->
+	<context:annotation-config />
+	<context:component-scan base-package="com.crm"></context:component-scan>
+	<aop:aspectj-autoproxy />
+
+	<!-- 配置 读取properties文件 jdbc.properties -->
+	<context:property-placeholder location="classpath:config/resource/jdbc.properties" ignore-unresolvable="true"/>
+	<!-- 使用dbcp的连接池配置数据源 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		
+		<!-- 驱动 -->
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<!-- url -->
+		<property name="url" value="${jdbc.url}" />
+		<!-- 用户名 -->
+		<property name="username" value="${jdbc.username}" />
+		<!-- 密码 -->
+		<property name="password" value="${jdbc.password}" />
+	</bean>
+
+	<!-- 配置sqlSessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 数据源 -->
+		<property name="dataSource" ref="dataSource" />
+		<!-- 加载MyBatis的主配置文件 -->
+		<property name="configLocation" value="classpath:config/resource/mybatis-config.xml"></property>
+	</bean>
+
+	<!-- 扫描Mapper -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 如果扫描多个包，中间用“,”隔开，英文输入法下 -->
+		<property name="basePackage" value="com.crm.mapper"></property>
+		<!-- 不能使用 <property name="sqlSessionFactory" ref="sqlSessionFactory"></property> 
+			这里先执行，会使dataSource不起作用， -->
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	</bean>
+
+	<!-- 配置事务 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- 打开事务的注解 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+</beans>        

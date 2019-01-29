@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crm.mapper.RightsMapper">
+  <resultMap id="BaseResultMap" type="com.crm.entity.Rights">
+    <id column="rid" jdbcType="INTEGER" property="rid" />
+    <result column="rightName" jdbcType="CHAR" property="rightname" />
+    <result column="rightType" jdbcType="CHAR" property="righttype" />
+    <result column="url" jdbcType="CHAR" property="url" />
+    <result column="pid" jdbcType="INTEGER" property="pid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    rid, rightName, rightType, url, pid
+  </sql>
+  
+  <!-- 根据登录的用户得到所有的权限 -->
+  <select id="getRight" resultType="com.crm.entity.Rights">
+  SELECT r.rid,r.rightName,r.rightType,r.url,r.pid FROM employee e,jobright j,rights r WHERE e.jobInfoId=j.jobInfoId AND j.jobInfoId=#{jobInfoId} AND j.rightId=r.pid AND e.id=#{id}
+  </select>
+  
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from rights
+    where rid = #{rid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from rights
+    where rid = #{rid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crm.entity.Rights">
+    insert into rights (rid, rightName, rightType, 
+      url, pid)
+    values (#{rid,jdbcType=INTEGER}, #{rightname,jdbcType=CHAR}, #{righttype,jdbcType=CHAR}, 
+      #{url,jdbcType=CHAR}, #{pid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.crm.entity.Rights">
+    insert into rights
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="rid != null">
+        rid,
+      </if>
+      <if test="rightname != null">
+        rightName,
+      </if>
+      <if test="righttype != null">
+        rightType,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="pid != null">
+        pid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="rid != null">
+        #{rid,jdbcType=INTEGER},
+      </if>
+      <if test="rightname != null">
+        #{rightname,jdbcType=CHAR},
+      </if>
+      <if test="righttype != null">
+        #{righttype,jdbcType=CHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=CHAR},
+      </if>
+      <if test="pid != null">
+        #{pid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crm.entity.Rights">
+    update rights
+    <set>
+      <if test="rightname != null">
+        rightName = #{rightname,jdbcType=CHAR},
+      </if>
+      <if test="righttype != null">
+        rightType = #{righttype,jdbcType=CHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=CHAR},
+      </if>
+      <if test="pid != null">
+        pid = #{pid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where rid = #{rid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crm.entity.Rights">
+    update rights
+    set rightName = #{rightname,jdbcType=CHAR},
+      rightType = #{righttype,jdbcType=CHAR},
+      url = #{url,jdbcType=CHAR},
+      pid = #{pid,jdbcType=INTEGER}
+    where rid = #{rid,jdbcType=INTEGER}
+  </update>
+</mapper>

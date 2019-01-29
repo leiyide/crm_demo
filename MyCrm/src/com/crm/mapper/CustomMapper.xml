@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crm.mapper.CustomMapper">
+  <resultMap id="BaseResultMap" type="com.crm.entity.Custom">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="CHAR" property="name" />
+    <result column="education" jdbcType="CHAR" property="education" />
+    <result column="phoneNo" jdbcType="CHAR" property="phoneno" />
+    <result column="qq" jdbcType="INTEGER" property="qq" />
+    <result column="email" jdbcType="CHAR" property="email" />
+    <result column="customStatu" jdbcType="CHAR" property="customstatu" />
+    <result column="createDate" jdbcType="DATE" property="createdate" />
+    <result column="inviteName" jdbcType="CHAR" property="invitename" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, education, phoneNo, qq, email, customStatu, createDate, inviteName
+  </sql>
+  
+  
+  <!-- 增加客户信息 -->
+  <!--excel表导入到数据库中  -->
+   <insert id="addCutom" parameterType="com.crm.entity.Custom">
+    insert into custom (id, name, education, 
+      phoneNo, qq, email, customStatu, 
+      createDate, inviteName)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=CHAR}, #{education,jdbcType=CHAR}, 
+      #{phoneno,jdbcType=CHAR}, #{qq,jdbcType=INTEGER}, #{email,jdbcType=CHAR}, #{customstatu,jdbcType=CHAR}, 
+      #{createdate,jdbcType=DATE}, #{invitename,jdbcType=CHAR})
+  </insert>
+  
+  <!-- 进行用户信息的查询 -->
+  <select id="selectCustom"  resultType="com.crm.entity.Custom">
+   select * from custom 
+   <where>
+  		<if test="name!=null and name!=''">
+  		and name like #{name}
+  		</if>
+  		<if test="phoneno!=null and phoneno!=''">
+  		and phoneno like #{phoneno}
+  		</if>
+  		<if test="invitename!=null and invitename!=''">
+  		and invitename like #{invitename}
+  		</if>
+  		<if test="createdate!=null and createdate!=''">
+  		and createdate like #{createdate}
+  		</if>	
+  	</where>
+  </select>
+  
+   <!-- 通过主键进行查询 -->
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from custom
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <!--修改客户的信息  -->
+  <update id="editCustom" parameterType="com.crm.entity.Custom">
+    update custom
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=CHAR},
+      </if>
+      <if test="education != null">
+        education = #{education,jdbcType=CHAR},
+      </if>
+      <if test="phoneno != null">
+        phoneNo = #{phoneno,jdbcType=CHAR},
+      </if>
+      <if test="qq != null">
+        qq = #{qq,jdbcType=INTEGER},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=CHAR},
+      </if>
+      <if test="customstatu != null">
+        customStatu = #{customstatu,jdbcType=CHAR},
+      </if>
+      <if test="createdate != null">
+        createDate = #{createdate,jdbcType=DATE},
+      </if>
+      <if test="invitename != null">
+        inviteName = #{invitename,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 查询用户为为新增未上门的所有条数 -->
+  <select id="getAllNum" resultType="java.lang.Integer">
+    SELECT COUNT(*) FROM custom WHERE customstatu=0;
+  </select>
+
+   <!-- 查询所有的原始数据 -->
+  <select id="getPristineCustom" resultType="com.crm.entity.Custom">
+    SELECT * FROM custom WHERE customstatu=0;
+  </select>
+  
+  
+   <!-- 查询用户为为上门的所有条数 -->
+  <select id="getConsultNum" resultType="java.lang.Integer">
+    SELECT COUNT(*) FROM custom WHERE customstatu=1;
+  </select>
+
+   <!-- 查询所有分配给咨询师的数据 -->
+  <select id="getConsultCustom" resultType="com.crm.entity.Custom">
+    SELECT * FROM custom WHERE customstatu=1;
+  </select>
+  
+  <!--分配销售助理之后修改客户的状态  -->
+  <update id="updateCustom" >
+    update custom set customStatu =2 where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!--分配咨询师之后修改客户的状态  -->
+  <update id="updateCustom2" >
+    update custom set customStatu =3 where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 进行数据的导出，查询得到所有的数据 -->
+  <select id="getAllCostom" resultType="com.crm.entity.Custom">
+    SELECT * FROM custom where customStatu =0 or customStatu=1
+  </select>
+ 
+  
+  <delete id="insertAllCostom" parameterType="java.lang.Integer">
+    delete from custom
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertSelective" parameterType="com.crm.entity.Custom">
+    insert into custom
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="education != null">
+        education,
+      </if>
+      <if test="phoneno != null">
+        phoneNo,
+      </if>
+      <if test="qq != null">
+        qq,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="customstatu != null">
+        customStatu,
+      </if>
+      <if test="createdate != null">
+        createDate,
+      </if>
+      <if test="invitename != null">
+        inviteName,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=CHAR},
+      </if>
+      <if test="education != null">
+        #{education,jdbcType=CHAR},
+      </if>
+      <if test="phoneno != null">
+        #{phoneno,jdbcType=CHAR},
+      </if>
+      <if test="qq != null">
+        #{qq,jdbcType=INTEGER},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=CHAR},
+      </if>
+      <if test="customstatu != null">
+        #{customstatu,jdbcType=CHAR},
+      </if>
+      <if test="createdate != null">
+        #{createdate,jdbcType=DATE},
+      </if>
+      <if test="invitename != null">
+        #{invitename,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.crm.entity.Custom">
+    update custom
+    set name = #{name,jdbcType=CHAR},
+      education = #{education,jdbcType=CHAR},
+      phoneNo = #{phoneno,jdbcType=CHAR},
+      qq = #{qq,jdbcType=INTEGER},
+      email = #{email,jdbcType=CHAR},
+      customStatu = #{customstatu,jdbcType=CHAR},
+      createDate = #{createdate,jdbcType=DATE},
+      inviteName = #{invitename,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
